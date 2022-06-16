@@ -1,6 +1,6 @@
 pragma solidity ^0.8.0;
 
-contract StarNotary {
+contract StarNotaryV1 {
     string public starName;
     address public starOwner;
 
