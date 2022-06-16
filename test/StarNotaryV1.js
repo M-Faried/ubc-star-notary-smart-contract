@@ -8,32 +8,43 @@ let owner;
 contract('StarNotaryV1', async (accs) => {
     accounts = accs;
     owner = accounts[0];
+
+    it('Has the correct name', async () => {
+        let instance = await StarNotaryV1.deployed();
+        let starName = await instance.starName.call();
+        assert.equal(starName, 'Awesome Udacity Star');
+    })
+
+    it('Can be claimed', async () => {
+        let instance = await StarNotaryV1.deployed();
+        await instance.claimStar({ from: owner });
+        let starOwner = await instance.starOwner.call();
+        assert.equal(starOwner, owner);
+    })
+
+    it('Can change name', async () => {
+        let instance = await StarNotaryV1.deployed();
+        let starName = await instance.starName.call();
+        assert.equal(starName, 'Awesome Udacity Star');
+
+        await instance.changeName('Updated Star Name', { from: owner });
+        starName = await instance.starName.call();
+        assert.equal(starName, 'Updated Star Name');
+    })
+
+    it('Can change owners', async () => {
+        let instance = await StarNotaryV1.deployed();
+        let secondUser = accounts[1];
+
+        // Assigning star to the first user
+        await instance.claimStar({ from: owner });
+        let starOwner = await instance.starOwner.call();
+        assert.equal(starOwner, owner);
+
+        // Assigning star to the second user
+        await instance.claimStar({ from: secondUser });
+        let secondOwner = await instance.starOwner.call();
+        assert.equal(secondOwner, secondUser);
+    })
 })
 
-it('Has the correct name', async () => {
-    let instance = await StarNotaryV1.deployed();
-    let starName = await instance.starName.call();
-    assert.equal(starName, 'Awesome Udacity Star');
-})
-
-it('Can be claimed', async () => {
-    let instance = await StarNotaryV1.deployed();
-    await instance.claimStar({ from: owner });
-    let starOwner = await instance.starOwner.call();
-    assert.equal(starOwner, owner);
-})
-
-it('Can change owners', async () => {
-    let instance = await StarNotaryV1.deployed();
-    let secondUser = accounts[1];
-
-    // Assigning star to the first user
-    await instance.claimStar({ from: owner });
-    let starOwner = await instance.starOwner.call();
-    assert.equal(starOwner, owner);
-
-    // Assigning star to the second user
-    await instance.claimStar({ from: secondUser });
-    let secondOwner = await instance.starOwner.call();
-    assert.equal(secondOwner, secondUser);
-})
