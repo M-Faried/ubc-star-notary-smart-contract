@@ -16,7 +16,7 @@ contract StarNotaryV1 {
     }
 
     function changeName (string memory newName) public {
-        require(bytes(newName).length > 0);
+        require(bytes(newName).length > 0, "The length of the name can't be empty.");
         starName = newName;
     }
 }
